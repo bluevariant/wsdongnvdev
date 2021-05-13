@@ -31,7 +31,7 @@ wsServer.on("request", function (request) {
   }
 
   const identification = request.httpRequest.headers.identification;
-  const connection = request.accept("echo-protocol", request.origin);
+  const connection = request.accept(undefined, request.origin);
 
   connections[identification] = connection;
 

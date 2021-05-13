@@ -38,6 +38,6 @@ client.on("connect", (connection) => {
   sendNumber();
 });
 
-client.connect("wss://ws.dongnv.dev/", "echo-protocol", "dongnv.dev", {
+client.connect("wss://ws.dongnv.dev/", undefined, "dongnv.dev", {
   identification: CLIENT_ID,
 });
