@@ -39,8 +39,14 @@ wsServer.on("request", function (request) {
     try {
       const data = JSON.parse(message.utf8Data);
 
-      if (connections[data.to]) {
-        connections[data.to].send(data.content);
+      if (typeof data.to === "string" && connections[data.to]) {
+        if (data.to === "*") {
+          _.forEach(connections, (connection, id) => {
+            if (id !== identification) connection.send(message.utf8Data);
+          });
+        } else {
+          connections[data.to].send(message.utf8Data);
+        }
       }
     } catch (e) {
       console.log(e);
