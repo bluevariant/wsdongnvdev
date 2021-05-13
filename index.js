@@ -47,6 +47,10 @@ wsServer.on("request", function (request) {
         } else {
           connections[data.to].send(message.utf8Data);
         }
+      } else if (Array.isArray(data.to)) {
+        _.forEach(connections, (connection, id) => {
+          if (data.to.includes(id)) connection.send(message.utf8Data);
+        });
       }
     } catch (e) {
       console.log(e);
