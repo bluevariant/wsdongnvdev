@@ -31,4 +31,4 @@ client.on("connect", function (connection) {
   sendNumber();
 });
 
-client.connect("ws://localhost:8080/", "echo-protocol");
+client.connect("wss://ws.dongnv.dev/", "echo-protocol");
