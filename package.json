@@ -11,11 +11,15 @@
     "test": "node test.js"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.169",
     "ejs": "^3.1.5",
     "express": "^4.15.2",
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2",
     "websocket": "^1.0.34"
   },
   "devDependencies": {
+    "@types/uuid": "^8.3.0",
     "@types/websocket": "^1.0.2",
     "got": "^11.3.0",
     "prettier": "^2.3.0",

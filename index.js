@@ -1,5 +1,6 @@
 const WebSocketServer = require("websocket").server;
 const http = require("http");
+const _ = require("lodash");
 
 const PORT = parseInt(process.env.PORT || 8080);
 const server = http.createServer(function (request, response) {
@@ -7,6 +8,7 @@ const server = http.createServer(function (request, response) {
   response.writeHead(404);
   response.end();
 });
+const connections = {};
 
 server.listen(PORT, function () {
   console.log(new Date() + " Server is listening on port " + PORT);
@@ -28,22 +30,29 @@ wsServer.on("request", function (request) {
     return;
   }
 
+  const identification = request.httpRequest.headers.identification;
   const connection = request.accept("echo-protocol", request.origin);
 
-  console.log(new Date() + " Connection accepted.");
+  connections[identification] = connection;
 
   connection.on("message", function (message) {
-    if (message.type === "utf8") {
-      console.log("Received Message: " + message.utf8Data);
+    const send = (connection) => {
+      if (message.type === "utf8") {
+        connection.sendUTF(message.utf8Data);
+      } else if (message.type === "binary") {
+        connection.sendBytes(message.binaryData);
+      }
+    };
 
-      connection.sendUTF(message.utf8Data);
-    } else if (message.type === "binary") {
-      console.log("Received Binary Message of " + message.binaryData.length + " bytes");
-
-      connection.sendBytes(message.binaryData);
+    if (identification === "main") {
+      _.forEach(connections, (connection, identification) => {
+        if (identification !== "main") send(connection);
+      });
+    } else {
+      if (connections["main"]) send(connections["main"]);
     }
   });
-  connection.on("close", function (reasonCode, description) {
-    console.log(new Date() + " Peer " + connection.remoteAddress + " disconnected.");
+  connection.on("close", () => {
+    delete connections[identification];
   });
 });
