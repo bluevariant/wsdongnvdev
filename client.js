@@ -30,7 +30,7 @@ client.on("connect", function (connection) {
       connection.send(
         JSON.stringify({
           from: CLIENT_ID,
-          to: "main",
+          to: "*",
           content: "Hello",
         })
       );
@@ -40,6 +40,6 @@ client.on("connect", function (connection) {
   sendNumber();
 });
 
-client.connect("ws://localhost:8080/", "echo-protocol", undefined, {
+client.connect("ws://localhost:8080/", "echo-protocol", "dongnv.dev", {
   identification: CLIENT_ID,
 });

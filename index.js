@@ -20,7 +20,7 @@ wsServer = new WebSocketServer({
 });
 
 function originIsAllowed(origin) {
-  return true;
+  return origin.includes("dongnv.dev");
 }
 
 wsServer.on("request", function (request) {
@@ -39,12 +39,12 @@ wsServer.on("request", function (request) {
     try {
       const data = JSON.parse(message.utf8Data);
 
-      if (typeof data.to === "string" && connections[data.to]) {
+      if (typeof data.to === "string") {
         if (data.to === "*") {
           _.forEach(connections, (connection, id) => {
             if (id !== identification) connection.send(message.utf8Data);
           });
-        } else {
+        } else if (connections[data.to]) {
           connections[data.to].send(message.utf8Data);
         }
       } else if (Array.isArray(data.to)) {
