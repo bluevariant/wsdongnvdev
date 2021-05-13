@@ -2,6 +2,7 @@ const WebSocketClient = require("websocket").client;
 const { v4 } = require("uuid");
 
 const client = new WebSocketClient();
+const CLIENT_ID = v4();
 
 client.on("connectFailed", function (error) {
   console.log("Connect Error: " + error.toString());
@@ -25,7 +26,14 @@ client.on("connect", function (connection) {
   function sendNumber() {
     if (connection.connected) {
       var number = Math.round(Math.random() * 0xffffff);
-      connection.sendUTF(number.toString());
+      // connection.sendUTF(number.toString());
+      connection.send(
+        JSON.stringify({
+          from: CLIENT_ID,
+          to: "main",
+          content: "Hello",
+        })
+      );
       setTimeout(sendNumber, 1000);
     }
   }
@@ -33,5 +41,5 @@ client.on("connect", function (connection) {
 });
 
 client.connect("ws://localhost:8080/", "echo-protocol", undefined, {
-  identification: v4(),
+  identification: CLIENT_ID,
 });

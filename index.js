@@ -36,20 +36,14 @@ wsServer.on("request", function (request) {
   connections[identification] = connection;
 
   connection.on("message", function (message) {
-    const send = (connection) => {
-      if (message.type === "utf8") {
-        connection.sendUTF(message.utf8Data);
-      } else if (message.type === "binary") {
-        connection.sendBytes(message.binaryData);
-      }
-    };
+    try {
+      const data = JSON.parse(message.utf8Data);
 
-    if (identification === "main") {
-      _.forEach(connections, (connection, identification) => {
-        if (identification !== "main") send(connection);
-      });
-    } else {
-      if (connections["main"]) send(connections["main"]);
+      if (connections[data.to]) {
+        connections[data.to].send(data.content);
+      }
+    } catch (e) {
+      console.log(e);
     }
   });
   connection.on("close", () => {
